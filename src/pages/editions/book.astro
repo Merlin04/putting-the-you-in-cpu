@@ -1,0 +1,222 @@
+---
+import '../../styles/global.css'
+import '../../styles/one-pager.css'
+import '../../styles/pagedjs-preview.css'
+import '../../styles/book.css'
+
+import { CollectionEntry, Render, getCollection } from 'astro:content'
+import DowngradeHeadings from '../../components/DowngradeHeadings.astro'
+import ScrollPadding from '../../components/ScrollPadding.astro'
+import ColoredTitle from '../../components/ColoredTitle.astro'
+import { abstract } from '../../metadata'
+
+const chapters = await getCollection('chapters')
+const rendered: [ CollectionEntry<'chapters'>, Awaited<Render['.mdx']> ][]
+	= await Promise.all(chapters.map(async chapter => [ chapter, await chapter.render() ]))
+---
+
+<html lang='en'>
+<head>
+	<meta charset='utf-8' />
+	<meta name='viewport' content='width=device-width, initial-scale=1' />
+
+	<link rel='preconnect' href='https://fonts.googleapis.com' />
+	<link rel='preconnect' href='https://fonts.gstatic.com' crossorigin />
+	<link href='https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&family=IBM+Plex+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap' rel='stylesheet' />
+
+	<!-- <SEO chapterSlug='intro' /> -->
+	<script defer data-domain='cpu.land' src='https://plausible.io/js/script.js' />
+</head>
+<body>
+	<header>
+		<div class='content'>
+			<h1><ColoredTitle onDark /></h1>
+			<p class='byline'>
+				By Lexi Mattick & Hack Club
+				&middot;
+				July, 2023
+			</p>
+		</div>
+		<img src='/squiggles/print.svg' class='cover-bg' />
+	</header>
+	<section class="blank" />
+	<section class="blank" />
+
+	<section id="pre">
+		<div>
+			<p>Putting the You in CPU, by Lexi Mattick (kognise.dev) and Hack Club (hackclub.com)</p>
+			<br />
+			<p>Copyright (c) 2023 Lexi Mattick</p>
+			<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+			<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p>
+			<p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+			<br />
+			<p>Book layout produced by B Smith (enby.land)</p>
+			<p>Published by Hack Club<br />
+				15 Falls Rd, Shelburne, VT 05482<br />
+				www.hackclub.com
+			</p>
+			<p>Printed in the United States of America</p>
+		</div>
+	</section>
+
+	<header id="titlepage">
+		<div class='content'>
+			<h1><ColoredTitle onDark /></h1>
+			<p class='byline'>
+				By
+				<a target='_blank' href='https://kognise.dev/'>Lexi Mattick</a><br />
+				&
+				<a href='https://hackclub.com/'>Hack Club</a>
+				&middot;
+				July, 2023
+			</p>
+		</div>
+	</header>
+
+	<section id="toc">
+		<h2>Contents</h2>
+		<ul>
+			{rendered.map(([ chapter, { Content } ]) => <>
+				<li><a href={`#${chapter.slug}`}></a></li>
+			</>)}
+		</ul>
+	</section>
+
+	<section class="blank" /> {/* push first content page to the right */}
+
+	<main>
+		<div class='content'>
+			{rendered.map(([ chapter, { Content } ]) => <>
+				<h2 id={chapter.slug}>Chapter {chapter.data.chapter}: {chapter.data.title}</h2>
+				<DowngradeHeadings>
+					<Content />
+				</DowngradeHeadings>
+			</>)}
+
+			<ScrollPadding hideEditions />
+		</div>
+	</main>
+
+	<script>
+		import { Previewer, Handler, registerHandlers } from 'pagedjs';
+
+		class LoggerHandler extends Handler {
+			constructor(chunker, polisher, caller) {
+				super(chunker, polisher, caller);
+			}
+
+			beforePreview(content, renderTo) {
+				console.log("beforePreview", content, renderTo);
+			}
+
+			afterPreview(pages) {
+				console.log("afterPreview", pages);
+			}
+
+			beforeParsed(content) {
+				console.log("beforeParsed", content);
+			}
+
+			afterParsed(parsed) {
+				console.log("afterParsed", parsed);
+			}
+
+			beforePageLayout(page) {
+				console.log("beforePageLayout", page);
+			}
+
+			afterPageLayout(pageElement, page, breakToken) {
+				console.log("afterPageLayout", pageElement, page, breakToken);
+			}
+
+			afterRendered(pages) {
+				console.log("afterRendered", pages);
+			}
+
+			beforeTreeParse(text, sheet) {
+				console.log("beforeTreeParse", text, sheet);
+			}
+
+			beforeTreeWalk(ast) {
+				console.log("beforeTreeWalk", ast);
+			}
+
+			afterTreeWalk(ast, sheet) {
+				console.log("afterTreeWalk", ast, sheet);
+			}
+
+			onUrl(urlNode) {
+				console.log("onUrl", urlNode);
+			}
+
+			onAtPage(atPageNode) {
+				console.log("onAtPage", atPageNode);
+			}
+
+			onRule(ruleNode) {
+				console.log("onRule", ruleNode);
+			}
+
+			onDeclaration(declarationNode, ruleNode) {
+				console.log("onDeclaration", declarationNode, ruleNode);
+			}
+
+			onContent(contentNode, declarationNode, ruleNode) {
+				console.log("onContent", contentNode, declarationNode, ruleNode);
+			}
+
+			layoutNode(node) {
+				console.log("layoutNode", node);
+			}
+
+			renderNode(node, sourceNode) {
+				console.log("renderNode", node, sourceNode);
+			}
+
+			onOverflow(overflow, rendered, bounds) {
+				console.log("onOverflow", overflow, rendered, bounds);
+			}
+
+			onBreakToken(breakToken, overflow, rendered) {
+				console.log("onBreakToken", breakToken, overflow, rendered);
+			}
+		}
+
+		// registerHandlers(LoggerHandler);
+
+		window.addEventListener("DOMContentLoaded", async () => {
+			console.log("Rendering book...");
+			document.body.querySelectorAll("iframe").forEach(iframe => iframe.remove());
+			document.body.querySelectorAll("img").forEach(img => img.loading = "eager");
+			// remove wikipedia links
+			document.body.querySelectorAll("a[href^='https://en.wikipedia.org']").forEach((a: HTMLAnchorElement) => {
+				// turn tag into a span
+				const span = document.createElement("span");
+				span.innerText = a.innerText;
+				a.replaceWith(span);
+			});
+			document.body.querySelectorAll("a").forEach(a => {
+				a.dataset.display = a.href;
+			});
+			// remove the "https://" or "http://" part of links
+			document.body.querySelectorAll("main a").forEach((a: HTMLAnchorElement) => {
+				a.dataset.display = a.dataset.display.replace(/^https?:\/\//, "");
+				// remove trailing slash if present
+				if(a.dataset.display.endsWith("/")) a.dataset.display = a.dataset.display.slice(0, -1);
+			});
+			// adjust h2 tags by removing the "Chapter N: " prefix
+			document.body.querySelectorAll("h2").forEach(h2 => {
+				const chapterStr = h2.innerText.match(/^Chapter \d+: /);
+				if(!chapterStr) return;
+				h2.dataset.chapter = chapterStr[0].slice(0, -2);
+				h2.innerText = h2.innerText.slice(chapterStr[0].length);
+			});
+			const paged = new Previewer();
+			const flow = await paged.preview();
+			console.log("Rendered", flow.total, "pages.");
+		});
+
+	</script>
+</body>
+</html>

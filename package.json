@@ -20,5 +20,8 @@
 		"rehype-external-links": "^2.0.1",
 		"rehype-preset-minify": "^6.0.0",
 		"shiki": "^0.14.2"
+	},
+	"dependencies": {
+		"pagedjs": "^0.4.3"
 	}
 }

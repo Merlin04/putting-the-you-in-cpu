@@ -1,0 +1,207 @@
+@page {
+    size: 7in 9in;
+
+    margin-top: 0.75in;
+    margin-right: 0.75in;
+    margin-left: 0.75in;
+    margin-bottom: 1in;
+
+    marks: crop cross;
+}
+
+@page:left {
+    margin-right: 0.875in;
+    @bottom-left {
+        content: counter(page) " / " "Putting the You in CPU";
+    }
+}
+
+@page:right {
+    margin-left: 0.875in;
+    @bottom-right {
+        content: string(title) " / " counter(page);
+    }
+}
+
+@page:nth(1) {
+    @bottom-right {
+        content: none;
+    }
+}
+
+@page:nth(2) {
+    @bottom-left {
+        content: none
+    }
+}
+
+@page:nth(3) {
+    @bottom-right {
+        content: none;
+    }
+}
+
+@page:nth(4) {
+    @bottom-left {
+        content: none;
+    }
+}
+
+@page:nth(5) {
+    @bottom-right {
+        content: none;
+    }
+}
+
+@page:nth(6) {
+    @bottom-left {
+        content: none;
+    }
+}
+
+@page:nth(7) {
+    @bottom-right {
+        content: none;
+    }
+}
+
+@page:nth(8) {
+    @bottom-left {
+        content: none;
+    }
+}
+
+/* https://libguides.lib.msu.edu/c.php?g=97090&p=908734 */
+@page:blank {
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+/* jank time */
+
+.pagedjs_sheet:has(h2[data-chapter]) .pagedjs_margin.hasContent .pagedjs_margin-content::after {
+    content: counter(page);
+}
+
+h2 {
+    string-set: title content(text);
+    page-break-before: right;
+    margin-top: 10mm;
+    margin-bottom: 20mm;
+}
+
+h2::before {
+    content: attr(data-chapter);
+    display: block;
+    font-size: 0.75em;
+    padding-bottom: 0.5em;
+}
+
+a {
+    color: inherit;
+    text-decoration: none
+}
+a::after {
+    content: " (" attr(data-display) ")";
+    /*text-decoration: underline;*/
+    word-break: break-all;
+    opacity: 0.7;
+}
+
+.content {
+    max-width: none;
+    padding: 0;
+}
+
+header {
+    page-break-after: always;
+}
+
+header h1 {
+    margin-top: 56mm;
+}
+
+header > div > * {
+    /*background-color: white;*/
+}
+
+header .byline {
+    /*padding-bottom: 5mm;*/
+}
+
+/*header a:first-of-type::after {*/
+/*    !* break after the element *!*/
+/*    content: " (" attr(href) ")\A";*/
+/*    white-space: pre;*/
+/*}*/
+
+header a::after {
+    text-decoration: none;
+}
+
+pre span {
+    text-wrap: initial;
+}
+
+html {
+    font-size: 14px;
+}
+
+#pre, .blank {
+    page-break-after: always;
+}
+
+#pre > div {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80%;
+    font-size: 10px;
+}
+
+#pre p {
+    margin: 10px 0;
+}
+
+.pre-container {
+    overflow: visible;
+}
+
+a[href^=\#]::before, a[href^=\/]::before, a[href^=\#]::after, a[href^=\/]::after {
+    content: none;
+    color: inherit;
+}
+
+#toc ul {
+    list-style: none;
+    padding: 0;
+    counter-reset: chaptoc -1;
+}
+
+#toc a[href]::before {
+    content: "Chapter " counter(chaptoc) ": " target-text(attr(href url), content);
+}
+
+#toc h2 {
+    padding-bottom: 25px;
+}
+
+#toc a[href] {
+    counter-increment: chaptoc;
+    font-weight: inherit;
+    padding-bottom: 0.5em;
+    display: block;
+}
+
+#toc a[href]::after {
+    content: target-counter(attr(href), page);
+    float: right;
+}
+
+/*blockquote {
+    page-break-inside: initial;
+}*/
+
+.img-group {
+    page-break-inside: avoid;
+}
